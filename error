@@ -1,0 +1,15 @@
+为什么def plot_loss(train_losses, val_losses):
+    epochs = range(1, len(train_losses) + 1)
+    print(type(train_losses),type(val_losses))
+    # 绘制 Loss 图
+    plt.figure(figsize=(8, 6))
+    plt.plot(epochs, train_losses, label='Training Loss', color='blue', linestyle='-')
+    plt.plot(epochs, val_losses, label='Validation Loss', color='orange', linestyle='--')
+    plt.title('Loss per Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    
+    # 保存图像
+    plt.savefig('loss.png')
+    plt.show()这个函数会报错ValueError: x and y must have same first dimension, but have shapes (3,) and (2,)但我输入的两个参数都是列表呀

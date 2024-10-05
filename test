@@ -1,0 +1,24 @@
+def test(model, test_loader):
+    model.eval()  # 设置模型为评估模式
+    correct = 0
+    total = 0
+
+    with torch.no_grad():  # 不需要计算梯度
+        for data, targets in test_loader:
+            data, targets = data.to(device), targets.to(device).float()
+
+            # 初始化隐藏状态
+            hidden = model.init_hidden(data.size(0))
+
+            # 前向传播
+            outputs, hidden = model(data, hidden)
+
+            # 将输出转换为 0 或 1
+            predicted = (outputs >= 0.5).float()  # 阈值 0.5
+
+            total += targets.size(0)
+            correct += (predicted.squeeze() == targets).sum().item()  # 统计正确的预测
+
+    accuracy = 100 * correct / total
+    test_accuracies.append(accuracy)  # 保存测试准确率
+    print(f'Accuracy of the model on the test set: {accuracy:.2f}%')

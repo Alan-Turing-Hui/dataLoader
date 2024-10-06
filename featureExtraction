@@ -1,0 +1,17 @@
+def __getitem__(self, idx):
+        # 加载音频文件
+        waveform, sample_rate = torchaudio.load(self.audio_files[idx])
+        pad_or_trim_waveform(waveform, sample_rate*12) 
+        # 提取特征
+        #生成梅尔频谱图(channels, n_mels, time)
+        mel_specgram = torchaudio.transforms.MelSpectrogram(sample_rate)(waveform)
+        #梅尔频谱图的标准化
+        mel_specgram_norm = (mel_specgram - mel_specgram.mean()) / mel_specgram.std()
+        #生成MFCC
+        mfcc = torchaudio.transforms.MFCC(sample_rate)(waveform)
+        #MFCC的标准化
+        mfcc_norm = (mfcc - mfcc.mean()) / mfcc.std()
+        #特征拼接得到(channels, n_mels+n_mcff, time)
+        feature = torch.cat([mel_specgram,mfcc], axis=1)
+        #去除channels这个维度，以及调换第二和第三维度
+        return feature[0].permute(1,0), self.labels[idx]
